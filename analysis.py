@@ -453,4 +453,4 @@ if __name__ == "__main__":
                         process_file(data_file, scene.stem)
 
                     print()
-                    print("\n\n")
+            print("\n")
