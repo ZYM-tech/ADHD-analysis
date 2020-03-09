@@ -3,28 +3,35 @@ from pathlib import Path
 import json
 import os,sys
 
-def process_file(file,scene,position):
-    with open(file, 'rb') as fp:
+def process_file(file, position, save_fp):
+    bssid = ''
+    with open(file, 'br') as fp, open (save_fp,'w')as save_fp:
 
-        a = str(scene) +'/'+ position+'.json'
-        w = open(a, 'w')
-
-       # dbgprint("Filename: {}".format(file, 'D'))
-        data = []
-        for ln, line in enumerate(fp, 1):
+        for ln, line_bytes in enumerate(fp, 1):
             try:
-                #position = position.encode()
-                if bytes(position,'UTF-8') in line:
-                    print(line)
-                    line = str(line)
-                    w.write(line)
+                line = line_bytes.decode("UTF-8")
+            except UnicodeDecodeError:
+                continue
+            try:
+                record = json.loads(line)
             except json.decoder.JSONDecodeError:
-                dbgprint("JSON Decode Fail! Line: {}, Data: {}".format(ln, line), "W")
+                continue
+            #如果是第一行,确定传感器位置对应编号
+            if record['type'] == "sensorbind":
+                bind_infos = record['data']
+                for bind_info in bind_infos:
+                    if bind_info['position'] == position:
+                        bssid = bind_info['bssid'].lower()
+                        print(position+ '对应编号: ' + bssid)
+                    else:
+                        continue
 
-
-
-
-
+                #如果是动作数据行,把该行存进data数组里
+            elif record['type'] == "sensordata" and record['data']['bssid'] == bssid:
+                save_fp.write(str(int(record['timestamp']/1000))+","+str(record['data']['values'])+'\n')
+            else:
+                continue
+        print(position+'已写入done\n')
 
 
 if __name__ == "__main__":
@@ -42,41 +49,24 @@ if __name__ == "__main__":
         'feed_birds_water': "小鸟喂水",
         'catch_worms': "苹果捉虫"
     }
+    bind_pos = ["LeftWrist", "RightWrist", "LeftAnkle", "RightAnkle", "Neck", "Waist"]
 
-    #问张腾怎样获取json数组里某对象的某属性值(已知position返回bssid值)
-    positions = ['47000000e103','47000000e303','47000000e203','47000000e403','47000000e503','470000032203']
-    
-    
-    
     i = 1
     print("=====确诊=====")
     for person in patient_path.iterdir():
         if person.is_dir():
-            print("\n")
 
             print("=====姓名: {}=====".format(person.stem), i)
             i=i+1
-
-
             for scene in person.iterdir():
                 if scene.stem in scenes:
                     print("=====场景: {}=====".format(scene_names[scene.stem]))
-
-                    #print(scene)
-
                     for data_file in scene.iterdir():
-                        print("\n")
-                        #此处可以加判断,是否为json文件
-
-                        #为每个传感器位置循环一遍
-                        for position in positions:
-                            #process_file(data_file,scene,position)
-                            print(position, data_file)
-
-
-
-
-
-
-
-
+                        #判断是否为json文件
+                        if data_file.suffix == ".json":
+                            #为每个传感器位置循环一遍
+                            for position in bind_pos:
+                                save_fp = scene /(position+'.csv')
+                                process_file(data_file,position,save_fp)
+                        else:
+                            continue
