@@ -1,7 +1,6 @@
-#成功将json按照传感器分开
+#将json按照传感器分开
 from pathlib import Path
 import json
-import os,sys
 
 def process_file(file, position, save_fp):
     bssid = ''
