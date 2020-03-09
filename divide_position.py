@@ -25,9 +25,16 @@ def process_file(file, position, save_fp):
                     else:
                         continue
 
-                #如果是动作数据行,把该行存进data数组里
+                #如果是动作数据行,把该行的timestamp和value存下来
             elif record['type'] == "sensordata" and record['data']['bssid'] == bssid:
-                save_fp.write(str(int(record['timestamp']/1000))+","+str(record['data']['values'])+'\n')
+                record.pop('type')
+                record['data'].pop('bssid')
+                record['timestamp'] = int(record['timestamp']/1000)
+                print(record)
+                save_fp.write(str(record))
+
+                #save_fp.write(str(int(record['timestamp']/1000))+","+str(record['data']['values'])+'\n')
+
             else:
                 continue
         print(position+'已写入done\n')
@@ -65,7 +72,8 @@ if __name__ == "__main__":
                         if data_file.suffix == ".json":
                             #为每个传感器位置循环一遍
                             for position in bind_pos:
-                                save_fp = scene /(position+'.csv')
+                                #save_fp = scene /(position+'.csv')
+                                save_fp = scene /(position+'.json')
                                 process_file(data_file,position,save_fp)
                         else:
                             continue
