@@ -411,8 +411,8 @@ def process_file(file, scene_name):
 
 
 if __name__ == "__main__":
-    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD/确诊")
-    control_path = Path("/Users/zhangyiming/PycharmProjects/ADHD/正常")
+    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊")
+    control_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     scenes = ['grasshopper', 'shape_color_interference', 'limb_conflict', 'finger_holes', 'balance_test',
               'schulte_grid', 'objects_tracking', 'feed_birds_water', 'catch_worms']
     scene_names = {
@@ -441,16 +441,3 @@ if __name__ == "__main__":
 
             print("\n\n\n")
 
-    print("=====正常=====")
-    for person in control_path.iterdir():
-        if person.is_dir():
-            print("=====姓名: {}=====".format(person.stem))
-            for scene in person.iterdir():
-                if scene.stem in scenes:
-                    print("=====场景: {}=====".format(scene_names[scene.stem]))
-
-                    for data_file in scene.iterdir():
-                        process_file(data_file, scene.stem)
-
-                    print()
-                    print("\n\n")
