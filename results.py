@@ -93,7 +93,10 @@ class LimbConflictResult:
         计算冲动率：冲动次数/总不举起问题数
         :return:
         """
-        return self.answer_red / self.red_question
+        if self.red_question != 0:
+            return self.answer_red / self.red_question
+        else:
+            return 0
 
 
 class FingerHolesResult:

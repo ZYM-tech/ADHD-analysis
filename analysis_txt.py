@@ -108,8 +108,14 @@ def objects_tracking(data,save_path):
                 print("正确个数：{}".format(answer_count))
                 print("错误个数：{}".format(wrong_count))
                 print("用时：{}".format(ts))
-                score = str(answer_count/(answer_count+wrong_count))+' '+ str(ts)#正确率,时间
-                score_path.write(score+'\n')
+
+                #避免分母为0
+                if answer_count+wrong_count != 0:
+                    score = str(answer_count/(answer_count+wrong_count))+' '+ str(ts)#正确率,时间
+                    score_path.write(score+'\n')
+                else:
+                    score = str(0)+' '+str(ts)
+                    score_path.write(score+'\n')
 
 
 def limb_conflict(data,save_path):
@@ -438,7 +444,7 @@ def process_file(file, scene_name,save_path):
 
 
 if __name__ == "__main__":
-    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊")
+    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     control_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     scenes = ['grasshopper', 'shape_color_interference', 'limb_conflict', 'finger_holes', 'balance_test',
               'schulte_grid', 'objects_tracking', 'feed_birds_water', 'catch_worms']
@@ -454,7 +460,7 @@ if __name__ == "__main__":
         'catch_worms': "catch_worms苹果捉虫"
     }
 
-    print("=====确诊=====")
+    print("=====正常=====")
     for person in patient_path.iterdir():
         if person.is_dir():
 

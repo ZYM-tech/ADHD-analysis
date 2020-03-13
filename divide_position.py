@@ -41,7 +41,7 @@ def process_file(file, position, save_fp):
 
 
 if __name__ == "__main__":
-    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD/确诊")
+    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     scenes = ['grasshopper', 'shape_color_interference', 'limb_conflict', 'finger_holes', 'balance_test',
               'schulte_grid', 'objects_tracking', 'feed_birds_water', 'catch_worms']
     scene_names = {
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     bind_pos = ["LeftWrist", "RightWrist", "LeftAnkle", "RightAnkle", "Neck", "Waist"]
 
     i = 1
-    print("=====确诊=====")
+    print("=====正常=====")
     for person in patient_path.iterdir():
         if person.is_dir():
 
