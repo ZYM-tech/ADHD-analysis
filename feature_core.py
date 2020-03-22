@@ -36,7 +36,10 @@ def sequence_feature(seq, win_size, step_size):
     :return: 2D feature matrix
     '''
     if win_size == 0:
-        return np.asarray(get_feature(seq))
+        #result = np.asarray(get_feature(seq))
+        result = np.array(get_feature(seq)).reshape((19,1))
+        return result
+
     window_size = win_size
     step_size = step_size
     r = len(seq)
@@ -52,7 +55,10 @@ def sequence_feature(seq, win_size, step_size):
 
 
 def test():
-    a = np.arange(0, 5).reshape((5, 1))
+    #arange(开始数,结尾数,步长) reshape((行数,每行数据个数))
+    a = np.arange(0, 20).reshape((20, 1))
+    print(a)
+    print("\n")
     print(sequence_feature(a, 0, 4))  # without window
     #print(sequence_feature(a, 5, 4))  # with window
     # example output:
