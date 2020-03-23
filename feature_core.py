@@ -2,7 +2,7 @@
 # （1）时域：均值，方差，标准差，最大值，最小值，过零点个数，最大值与最小值之差，众数
 # （2）频域：直流分量，图形的均值、方差、标准差、斜度、峭度，幅度的均值、方差、标准差、斜度、峭度
 # 共19个特征
-
+from pathlib import Path
 import numpy as np
 import math
 import json
@@ -83,7 +83,7 @@ def text_save(filename, data):#filename为写入txt文件的路径，data为要�
         s = str(data[i]).replace('[','').replace(']','')#去除[],这两行按数据不同，可以选择
         s = s.replace("'",'').replace(',','') +','   #去除单引号，逗号，每行末尾追加换行符
         file.write(s)
-    file.write('\n')#txt换行
+    file.write('ADHD\n')#txt换行
     file.close()
     print("保存成功")
 
@@ -113,10 +113,48 @@ def test(file1,file2,file3,file4,file5,file6,save_file):
     #print(sequence_feature(a, 5, 4))  # with window
 
 if __name__ == '__main__':
-    file = '/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常/ailuoyu/balance_test/LeftAnkle.json'
-    save_file = '/Users/zhangyiming/PycharmProjects/ADHD-analysis/test.txt'
+    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊")
+    normal_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
+    scenes = ['grasshopper', 'shape_color_interference', 'limb_conflict', 'finger_holes', 'balance_test',
+              'schulte_grid', 'objects_tracking', 'feed_birds_water', 'catch_worms']
+    scene_names = {
+        'grasshopper': "捉蚂蚱",
+        'shape_color_interference': "形色干扰",
+        'limb_conflict': "肢体冲突",
+        'finger_holes': "戳洞",
+        'balance_test': "乒乓球平衡",
+        'schulte_grid': "舒尔特方格",
+        'objects_tracking': "找小球",
+        'feed_birds_water': "小鸟喂水",
+        'catch_worms': "苹果捉虫"
+    }
+    bind_pos = ["LeftWrist", "RightWrist", "LeftAnkle", "RightAnkle", "Neck", "Waist"]
+
+    i = 1
+    print("=====确诊=====")
+    for person in patient_path.iterdir():
+        if person.is_dir():
+
+            print("=====姓名: {}=====".format(person.stem), i)
+            i=i+1
+            for scene in person.iterdir():
+                if scene.stem in scenes:
+                    print("=====场景: {}=====".format(scene_names[scene.stem]))
+                    addr = []
+                    for pos in bind_pos:
+                        address = str(scene) + '/'+pos+'.json'
+                        addr.append(address)
+
+                    '''       
+                    #一个人保存一个txt
+                    save_file = str(person) + '/test.txt'
+                    print(save_file)
+                    test(addr[0],addr[1],addr[2],addr[3],addr[4],addr[5],save_file)
+                    '''
+                    test(addr[0],addr[1],addr[2],addr[3],addr[4],addr[5],'/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊/ADHD.txt')
 
 
 
-    test(file1,file2,file3,file4,file5,file6,save_file)
+
+
 
