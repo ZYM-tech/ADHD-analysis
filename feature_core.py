@@ -38,7 +38,11 @@ def sequence_feature(seq, win_size, step_size):
     :return: 2D feature matrix
     '''
     if win_size == 0:
-        result = np.asarray(get_feature(seq))
+        try:
+            result = np.asarray(get_feature(seq))
+        except ValueError:
+            pass
+            return 0
         return result
 
     window_size = win_size
@@ -83,7 +87,7 @@ def text_save(filename, data):#filename为写入txt文件的路径，data为要�
         s = str(data[i]).replace('[','').replace(']','')#去除[],这两行按数据不同，可以选择
         s = s.replace("'",'').replace(',','') +','   #去除单引号，逗号，每行末尾追加换行符
         file.write(s)
-    file.write('ADHD\n')#txt换行
+    file.write('Control\n')#txt换行
     file.close()
     print("保存成功")
 
@@ -107,13 +111,13 @@ def test(file1,file2,file3,file4,file5,file6,save_file):
 
     #一个 人·场景 的全部动作特征值
     motion_feature = np.hstack((a,b,c,d,e,f))
-
+    print(motion_feature)  # without window
     text_save(save_file, motion_feature)
-    print(sequence_feature(a, 0, 2))  # without window
+
     #print(sequence_feature(a, 5, 4))  # with window
 
 if __name__ == '__main__':
-    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊")
+    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     normal_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     scenes = ['grasshopper', 'shape_color_interference', 'limb_conflict', 'finger_holes', 'balance_test',
               'schulte_grid', 'objects_tracking', 'feed_birds_water', 'catch_worms']
@@ -151,8 +155,8 @@ if __name__ == '__main__':
                     print(save_file)
                     test(addr[0],addr[1],addr[2],addr[3],addr[4],addr[5],save_file)
                     '''
-                    test(addr[0],addr[1],addr[2],addr[3],addr[4],addr[5],'/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊/ADHD.txt')
-
+                    test(addr[0],addr[1],addr[2],addr[3],addr[4],addr[5],'/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常/Control.txt')
+                    print('下一个场景',addr[0])
 
 
 

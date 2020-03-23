@@ -25,7 +25,7 @@ class Feature_time(object):
         return np.std(self.data)
 
     def time_mode(self):#众数
-        return float(scipy.stats.mode(self.data, axis=None)[0])
+        return scipy.stats.mode(self.data, axis=None)[0].astype(np.float)
 
     def time_max(self):#最大值
         return np.max(self.data)
@@ -48,7 +48,7 @@ class Feature_time(object):
         feature_all.append(self.time_mean())#均值
         feature_all.append(self.time_var())#方差
         feature_all.append(self.time_std())#标准差
-        #feature_all.append(self.time_mode())#众数
+        feature_all.append(self.time_mode())#众数
         feature_all.append(self.time_max())#最大值
         feature_all.append(self.time_min())#最小值
         #feature_all.append(self.time_over_zero())
