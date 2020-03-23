@@ -4,6 +4,8 @@
 # 共19个特征
 
 import numpy as np
+import math
+import json
 
 from feature_time import Feature_time
 from feature_fft import  Feature_fft
@@ -36,8 +38,7 @@ def sequence_feature(seq, win_size, step_size):
     :return: 2D feature matrix
     '''
     if win_size == 0:
-        #result = np.asarray(get_feature(seq))
-        result = np.array(get_feature(seq)).reshape((19,1))
+        result = np.asarray(get_feature(seq))
         return result
 
     window_size = win_size
@@ -53,25 +54,56 @@ def sequence_feature(seq, win_size, step_size):
         j += step_size
     return np.asarray(feature_mat)
 
+def text_save(filename, data):#filename为写入CSV文件的路径，data为要写入数据列表.
+    file = open(filename,'a')
+    for i in range(len(data)):
+        s = str(data[i]).replace('[','').replace(']','')#去除[],这两行按数据不同，可以选择
+        s = s.replace("'",'').replace(',','') +','   #去除单引号，逗号，每行末尾追加换行符
+        file.write(s)
+    file.write('\n')#txt换行
+    file.close()
+    print("保存成功")
+
+
+
+
+
+
+#将加速度存入数组
+def make_accels(file):#file为json文件地址
+    sum = 0
+
+    with open(file, 'br') as fp:
+        for ln, line_bytes in enumerate(fp, 1):
+            try:
+                line = line_bytes.decode("UTF-8")
+            except UnicodeDecodeError:
+                continue
+            try:
+                record = json.loads(line)
+            except json.decoder.JSONDecodeError:
+                print('JSONDecodeError')
+                continue
+            sum = sum + record['motion']
+            print(record['motion'],sum)
+
+    return 0
+
+
+
+
 
 def test():
     #arange(开始数,结尾数,步长) reshape((行数,每行数据个数))
-    a = np.arange(0, 20).reshape((20, 1))
+    a = np.arange(0, 5).reshape((5, 1))
     print(a)
     print("\n")
-    print(sequence_feature(a, 0, 4))  # without window
-    #print(sequence_feature(a, 5, 4))  # with window
-    # example output:
-    # [4.5         4.5         2.87228132  0.          9.          0.          9.
-    #  9.          0.          2.66666667  1.55555556  1.24721913 - 1.14074074
-    #  - 1.14074074  3.          2.          1.41421356  0. - 1.3]
-    # [[2.          2.          1.41421356  0.          4.          0.          4.
-    #   4.          0.          0.66666667  0.22222222  0.47140452 - 0.07407407
-    #   - 0.07407407  1.5         0.25        0.5         0. - 2.]
-    #  [6.          6.          1.41421356  4.          8.          4.          5.
-    #  4.          4.          0.54545455  0.24793388  0.4979296 - 0.02253944
-    #  - 0.02253944  5.5         0.25        0.5         0. - 2.]]
 
+    savepath = '/Users/zhangyiming/PycharmProjects/ADHD-analysis/test.txt'
+    text_save(savepath, sequence_feature(a,0,2))
+    print(sequence_feature(a, 0, 2))  # without window
+    #print(sequence_feature(a, 5, 4))  # with window
 
 if __name__ == '__main__':
-    test()
+    #test()
+    make_accels('/Users/zhangyiming/PycharmProjects/ADHD-analysis/hhh/ailuoyu/balance_test/LeftAnkle.json')

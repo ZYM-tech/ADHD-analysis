@@ -1,6 +1,7 @@
 #将json按照传感器分开
 from pathlib import Path
 import json
+import math
 
 def process_file(file, position, save_fp):
     bssid = ''
@@ -27,12 +28,27 @@ def process_file(file, position, save_fp):
 
                 #如果是动作数据行,把该行的timestamp和value存下来
             elif record['type'] == "sensordata" and record['data']['bssid'] == bssid:
+                dict={}
                 record.pop('type')
                 record['data'].pop('bssid')
-                record['timestamp'] = int(record['timestamp']/1000)
-                print(record)
-                save_fp.write(str(record))
+                #record['timestamp'] = int(record['timestamp']/1000)
+                dict['timestamp'] = int(record['timestamp']/1000)
 
+                #合成三轴加速度
+                a = float(record['data']['values'][0])
+                b = float(record['data']['values'][1])
+                c = float(record['data']['values'][2])
+                sss = math.sqrt(a**2 + b**2 + c**2)
+
+                dict['motion'] = sss
+                print(dict)
+
+                json.dump(dict,save_fp,ensure_ascii=False)
+                save_fp.write('\n')
+
+                #print(record)
+                #json.dump(record,save_fp,ensure_ascii=False)
+                #save_fp.write(str(record))
                 #save_fp.write(str(int(record['timestamp']/1000))+","+str(record['data']['values'])+'\n')
 
             else:
@@ -41,7 +57,8 @@ def process_file(file, position, save_fp):
 
 
 if __name__ == "__main__":
-    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
+    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊")
+    normal_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     scenes = ['grasshopper', 'shape_color_interference', 'limb_conflict', 'finger_holes', 'balance_test',
               'schulte_grid', 'objects_tracking', 'feed_birds_water', 'catch_worms']
     scene_names = {
@@ -58,7 +75,7 @@ if __name__ == "__main__":
     bind_pos = ["LeftWrist", "RightWrist", "LeftAnkle", "RightAnkle", "Neck", "Waist"]
 
     i = 1
-    print("=====正常=====")
+    print("=====确诊=====")
     for person in patient_path.iterdir():
         if person.is_dir():
 
@@ -77,3 +94,27 @@ if __name__ == "__main__":
                                 process_file(data_file,position,save_fp)
                         else:
                             continue
+
+
+
+    print("=====正常=====")
+    for person in normal_path.iterdir():
+        if person.is_dir():
+
+            print("=====姓名: {}=====".format(person.stem), i)
+            i=i+1
+            for scene in person.iterdir():
+                if scene.stem in scenes:
+                    print("=====场景: {}=====".format(scene_names[scene.stem]))
+                    for data_file in scene.iterdir():
+                        #判断是否为json文件
+                        if data_file.suffix == ".json":
+                            #为每个传感器位置循环一遍
+                            for position in bind_pos:
+                                #save_fp = scene /(position+'.csv')
+                                save_fp = scene /(position+'.json')
+                                process_file(data_file,position,save_fp)
+                        else:
+                            continue
+
+
