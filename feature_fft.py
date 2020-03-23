@@ -1,12 +1,4 @@
 # encoding=utf-8
-"""
-    Created on 15:05 2017/3/28 
-    @author: Jindong Wang
-"""
-
-"""
-   Construct sequence features for time-series sequence data
-"""
 
 import numpy as np
 

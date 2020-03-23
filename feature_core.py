@@ -90,9 +90,6 @@ def make_accels(file):#file为json文件地址
     return 0
 
 
-
-
-
 def test():
     #arange(开始数,结尾数,步长) reshape((行数,每行数据个数))
     a = np.arange(0, 5).reshape((5, 1))

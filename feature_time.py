@@ -1,8 +1,4 @@
 # encoding=utf-8
-"""
-    Created on 14:46 2017/3/28 
-    @author: Jindong Wang
-"""
 import numpy as np
 import scipy.stats
 
