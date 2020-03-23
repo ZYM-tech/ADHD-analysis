@@ -53,27 +53,14 @@ def sequence_feature(seq, win_size, step_size):
         feature_mat.append(win_feature)
         j += step_size
     return np.asarray(feature_mat)
-
-def text_save(filename, data):#filename为写入CSV文件的路径，data为要写入数据列表.
-    file = open(filename,'a')
-    for i in range(len(data)):
-        s = str(data[i]).replace('[','').replace(']','')#去除[],这两行按数据不同，可以选择
-        s = s.replace("'",'').replace(',','') +','   #去除单引号，逗号，每行末尾追加换行符
-        file.write(s)
-    file.write('\n')#txt换行
-    file.close()
-    print("保存成功")
+    #return  feature_mat
 
 
-
-
-
-
-#将加速度存入数组
+#将加速度存入数组,返回加速度数组
 def make_accels(file):#file为json文件地址
-    sum = 0
 
     with open(file, 'br') as fp:
+        motion_list = []
         for ln, line_bytes in enumerate(fp, 1):
             try:
                 line = line_bytes.decode("UTF-8")
@@ -84,23 +71,52 @@ def make_accels(file):#file为json文件地址
             except json.decoder.JSONDecodeError:
                 print('JSONDecodeError')
                 continue
-            sum = sum + record['motion']
-            print(record['motion'],sum)
+            motion_list.append(record['motion'])
+        #motion_list = np.array(motion_list.append(record['motion']))
+        #print(motion_list)
 
-    return 0
+    return motion_list
 
+def text_save(filename, data):#filename为写入txt文件的路径，data为要写入数据列表(6个位置的特征集合数组).
+    file = open(filename,'a')
+    for i in range(len(data)):
+        s = str(data[i]).replace('[','').replace(']','')#去除[],这两行按数据不同，可以选择
+        s = s.replace("'",'').replace(',','') +','   #去除单引号，逗号，每行末尾追加换行符
+        file.write(s)
+    file.write('\n')#txt换行
+    file.close()
+    print("保存成功")
 
-def test():
+def test(file1,file2,file3,file4,file5,file6,save_file):
     #arange(开始数,结尾数,步长) reshape((行数,每行数据个数))
-    a = np.arange(0, 5).reshape((5, 1))
-    print(a)
-    print("\n")
+    #a = np.arange(0, 5).reshape((5, 1))
 
-    savepath = '/Users/zhangyiming/PycharmProjects/ADHD-analysis/test.txt'
-    text_save(savepath, sequence_feature(a,0,2))
+
+    #返回file1的全部特征值,存入a数组
+    a = sequence_feature(make_accels(file1), 0, 2)
+    #返回file2的全部特征值,存入b数组
+    b = sequence_feature(make_accels(file2), 0, 2)
+    #返回file3的全部特征值,存入c数组
+    c = sequence_feature(make_accels(file3), 0, 2)
+    #返回file4的全部特征值,存入d数组
+    d = sequence_feature(make_accels(file4), 0, 2)
+    #返回file5的全部特征值,存入e数组
+    e = sequence_feature(make_accels(file5), 0, 2)
+    #返回file6的全部特征值,存入f数组
+    f = sequence_feature(make_accels(file6), 0, 2)
+
+    #一个 人·场景 的全部动作特征值
+    motion_feature = np.hstack((a,b,c,d,e,f))
+
+    text_save(save_file, motion_feature)
     print(sequence_feature(a, 0, 2))  # without window
     #print(sequence_feature(a, 5, 4))  # with window
 
 if __name__ == '__main__':
-    #test()
-    make_accels('/Users/zhangyiming/PycharmProjects/ADHD-analysis/hhh/ailuoyu/balance_test/LeftAnkle.json')
+    file = '/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常/ailuoyu/balance_test/LeftAnkle.json'
+    save_file = '/Users/zhangyiming/PycharmProjects/ADHD-analysis/test.txt'
+
+
+
+    test(file1,file2,file3,file4,file5,file6,save_file)
+

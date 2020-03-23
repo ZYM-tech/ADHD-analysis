@@ -1,5 +1,7 @@
 # encoding=utf-8
-
+# （1）时域：均值，方差，标准差，最大值，最小值，过零点个数，最大值与最小值之差，众数
+# （2）频域：直流分量，图形的均值、方差、标准差、斜度、峭度，幅度的均值、方差、标准差、斜度、峭度
+# 共19个特征
 import numpy as np
 
 
@@ -95,16 +97,17 @@ class Feature_fft(object):
         Get all fft features in one function
         :return: All fft features in one list
         '''
+        # （2）频域：直流分量，图形的均值、方差、标准差、斜度、峭度;幅度的均值、方差、标准差、斜度、峭度
         feature_all = list()
-        feature_all.append(self.fft_dc())
-        feature_all.append(self.fft_shape_mean())
-        feature_all.append(self.fft_shape_std() ** 2)
-        feature_all.append(self.fft_shape_std())
-        feature_all.append(self.fft_shape_skew())
-        feature_all.append(self.fft_shape_kurt())
-        feature_all.append(self.fft_mean())
-        feature_all.append(self.fft_var())
-        feature_all.append(self.fft_std())
-        feature_all.append(self.fft_skew())
-        feature_all.append(self.fft_kurt())
+        feature_all.append(self.fft_dc())#直流分量
+        feature_all.append(self.fft_shape_mean())#图形均值
+        feature_all.append(self.fft_shape_std() ** 2)#图形方差
+        feature_all.append(self.fft_shape_std())#图形标准差
+        feature_all.append(self.fft_shape_skew())#图形斜度
+        feature_all.append(self.fft_shape_kurt())#图形峭度
+        feature_all.append(self.fft_mean())#幅度均值
+        feature_all.append(self.fft_var())#幅度方差
+        feature_all.append(self.fft_std())#幅度标准差
+        feature_all.append(self.fft_skew())#幅度斜度
+        feature_all.append(self.fft_kurt())#幅度峭度
         return feature_all
