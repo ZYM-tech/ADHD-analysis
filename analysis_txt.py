@@ -1,4 +1,5 @@
-#计算测试得分并写入score
+
+#计算测试得分并写入score.txt里
 from pathlib import Path
 import json
 

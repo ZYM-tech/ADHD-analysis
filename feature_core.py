@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# （1）时域：均值，方差，标准差，最大值，最小值，过零点个数，最大值与最小值之差，众数
+# （1）时域：均值，方差，标准差，最大值，最小值，最大值与最小值之差，众数
 # （2）频域：直流分量，图形的均值、方差、标准差、斜度、峭度，幅度的均值、方差、标准差、斜度、峭度
 # 共19个特征
 from pathlib import Path
@@ -87,7 +87,7 @@ def text_save(filename, data):#filename为写入txt文件的路径，data为要�
         s = str(data[i]).replace('[','').replace(']','')#去除[],这两行按数据不同，可以选择
         s = s.replace("'",'').replace(',','') +' '   #去除单引号，逗号，每行末尾追加换行符
         file.write(s)
-    file.write('1\n')#txt换行
+    file.write('0\n')#txt换行
     file.close()
     print("保存成功")
 
@@ -117,7 +117,7 @@ def test(file1,file2,file3,file4,file5,file6,save_file):
     #print(sequence_feature(a, 5, 4))  # with window
 
 if __name__ == '__main__':
-    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊")
+    patient_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     normal_path = Path("/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常")
     scenes = ['grasshopper', 'shape_color_interference', 'limb_conflict', 'finger_holes', 'balance_test',
               'schulte_grid', 'objects_tracking', 'feed_birds_water', 'catch_worms']
@@ -155,7 +155,7 @@ if __name__ == '__main__':
                     print(save_file)
                     test(addr[0],addr[1],addr[2],addr[3],addr[4],addr[5],save_file)
                     '''
-                    test(addr[0],addr[1],addr[2],addr[3],addr[4],addr[5],'/Users/zhangyiming/PycharmProjects/ADHD-analysis/确诊/ADHD.txt')
+                    test(addr[0],addr[1],addr[2],addr[3],addr[4],addr[5],'/Users/zhangyiming/PycharmProjects/ADHD-analysis/正常/Control.txt')
                     print('下一个场景',addr[0])
 
 

@@ -78,7 +78,6 @@ if __name__ == "__main__":
     print("=====确诊=====")
     for person in patient_path.iterdir():
         if person.is_dir():
-
             print("=====姓名: {}=====".format(person.stem), i)
             i=i+1
             for scene in person.iterdir():
